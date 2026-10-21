@@ -1,0 +1,188 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0c0a09; /* stone-950 */
+  --color-foreground: #f5f5f4; /* stone-100 */
+  --color-primary: #d97706; /* amber-600 */
+  --color-primary-foreground: #0c0a09;
+  --color-secondary: #1c1917; /* stone-900 */
+  --color-secondary-foreground: #f5f5f4;
+  --color-muted: #292524; /* stone-800 */
+  --color-muted-foreground: #a8a29e; /* stone-400 */
+  --color-accent: #292524;
+  --color-accent-foreground: #f5f5f4;
+  --color-border: #292524;
+  --color-input: #292524;
+  --color-ring: #d97706;
+}
+
+/* ========================================================================= */
+/* ULTRA-LUXURY SMOOTH SCROLLING & HARDWARE ACCELERATION                     */
+/* ========================================================================= */
+:root {
+  --ease-luxury: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-fluid: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-bounce-soft: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior-y: none;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hardware composite layers for media elements to prevent compositing bottlenecks */
+img, svg, video {
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.will-change-transform {
+  will-change: transform;
+}
+
+.transform-gpu {
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Lightweight backdrop blur (capped at 8px) with GPU-accelerated fallback to avoid rasterization stall */
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  [class*="backdrop-blur"] {
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  [class*="backdrop-blur"] {
+    background-color: rgba(12, 10, 9, 0.95) !important;
+  }
+}
+
+/* ========================================================================= */
+/* ZERO-JANK MOBILE / LOW-POWER GPU OVERHAUL (< 768px)                       */
+/* Optimize below-the-fold scroll elements while preserving loader effects   */
+/* ========================================================================= */
+@media (max-width: 768px) {
+  section [class*="backdrop-blur"],
+  section .backdrop-blur,
+  section .backdrop-blur-sm,
+  section .backdrop-blur-md,
+  section .backdrop-blur-lg,
+  section .backdrop-blur-xl {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    background-color: rgba(12, 10, 9, 0.96) !important;
+  }
+
+  /* Simplify heavy multi-stacked shadows to lightweight single GPU shadow */
+  [class*="shadow-[0_-50px"],
+  [class*="shadow-[0_-40px"],
+  [class*="shadow-[0_30px"] {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.85) !important;
+  }
+}
+
+/* CSS containment for zero-repaint section isolation */
+section,
+[data-contain-content="true"],
+#rooms-section,
+#gallery-section,
+#amenities,
+#dining,
+#location,
+#testimonials {
+  contain: content !important;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+  overscroll-behavior-y: none;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+/* Ensure any modal/sheet content scrolls independently without Lenis interference */
+.lenis.lenis-smooth [data-lenis-prevent],
+[data-lenis-prevent] {
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-y !important;
+}
+
+.lenis.lenis-stopped {
+  /* Prevent iframe clipping and scroll resetting */
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+@layer base {
+  *, ::before, ::after {
+    border-color: #292524;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: #0c0a09;
+    color: #f5f5f4;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* GPU Acceleration & Repaint Reduction on Interactive Elements & Sections */
+  .room-card,
+  .gallery-card,
+  .luxury-card,
+  .hero-element,
+  .animated-card,
+  .image-wrapper,
+  .section-wrapper,
+  section,
+  article {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    contain: layout paint;
+  }
+
+  button, a {
+    transition: opacity 0.3s ease, background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+  }
+
+  /* Custom Luxury Noir & Gold Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0c0a09;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #292524;
+    border-radius: 9999px;
+    border: 1px solid rgba(217, 119, 6, 0.25);
+    transition: background-color 0.25s var(--ease-luxury), border-color 0.25s var(--ease-luxury);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #d97706;
+    border-color: #f59e0b;
+  }
+}
